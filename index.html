@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RideMax Pro - Enhanced Ride-Hailing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <h1>🚗 RideMax Pro - Enhanced Ride-Hailing</h1>
+            <p>Behavioral Design Patterns Implementation</p>
+            <nav class="header-nav">
+                <button class="nav-tab active" data-tab="search">🔍 Ride Search</button>
+                <button class="nav-tab" data-tab="observer">👥 Observer</button>
+                <button class="nav-tab" data-tab="strategy">💰 Strategy</button>
+                <button class="nav-tab" data-tab="command">⚡ Command</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Ride Search Section - NEW CORE FEATURE -->
+        <section id="search-section" class="pattern-section active">
+            <div class="card search-card">
+                <div class="card__header">
+                    <h2>🔍 Search Rides - From Source to Destination</h2>
+                    <p>Find and book available rides with real-time updates</p>
+                </div>
+                <div class="card__body">
+                    <div class="search-interface">
+                        <div class="search-inputs">
+                            <div class="location-inputs">
+                                <div class="input-group">
+                                    <label class="form-label">From Location</label>
+                                    <div class="location-input-wrapper">
+                                        <input type="text" class="form-control location-input" id="from-location" placeholder="Select pickup location" autocomplete="off">
+                                        <div class="location-dropdown" id="from-dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="location-swap">
+                                    <button type="button" class="btn btn--outline swap-btn" id="swap-locations">⇄</button>
+                                </div>
+                                <div class="input-group">
+                                    <label class="form-label">To Location</label>
+                                    <div class="location-input-wrapper">
+                                        <input type="text" class="form-control location-input" id="to-location" placeholder="Select destination" autocomplete="off">
+                                        <div class="location-dropdown" id="to-dropdown"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="search-criteria">
+                                <div class="input-group">
+                                    <label class="form-label">Max Distance (km)</label>
+                                    <input type="range" class="distance-slider" id="max-distance" min="1" max="50" value="25">
+                                    <span class="distance-value" id="distance-value">25 km</span>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="form-label">Fare Type</label>
+                                    <div class="fare-type-options">
+                                        <label class="radio-option">
+                                            <input type="radio" name="fare-type" value="Normal" checked>
+                                            <span>Normal</span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="fare-type" value="Surge">
+                                            <span>Surge</span>
+                                        </label>
+                                        <label class="radio-option">
+                                            <input type="radio" name="fare-type" value="Discount">
+                                            <span>Discount</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn--primary btn--lg search-btn" id="search-rides-btn">
+                                <span class="btn-text">Search Rides</span>
+                            </button>
+                        </div>
+                        
+                        <div class="search-results" id="search-results" style="display: none;">
+                            <div class="results-header">
+                                <h3>Available Rides</h3>
+                                <div class="sort-options">
+                                    <select class="form-control" id="sort-by">
+                                        <option value="distance">Sort by Distance</option>
+                                        <option value="fare">Sort by Fare</option>
+                                        <option value="rating">Sort by Rating</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="results-table-container">
+                                <table class="results-table" id="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Route</th>
+                                            <th>Driver</th>
+                                            <th>Distance</th>
+                                            <th>Fare</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="results-tbody">
+                                        <!-- Search results will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Observer Pattern Section -->
+        <section id="observer-section" class="pattern-section">
+            <div class="card observer-card">
+                <div class="card__header">
+                    <h2>👥 Real-Time Notifications - Observer Pattern</h2>
+                    <p>Real-time driver status updates to subscribed riders</p>
+                </div>
+                <div class="card__body">
+                    <div class="pattern-content">
+                        <div class="status-panel">
+                            <h3>Current Driver Status</h3>
+                            <div class="status-display">
+                                <span class="status status--info" id="current-status">Available</span>
+                            </div>
+                            <div class="driver-actions">
+                                <button type="button" class="btn btn--primary" data-status="Ride Accepted">Accept Ride</button>
+                                <button type="button" class="btn btn--primary" data-status="Start Journey">Start Journey</button>
+                                <button type="button" class="btn btn--success" data-status="Complete Ride">Complete Ride</button>
+                                <button type="button" class="btn btn--error" data-status="Cancel Ride">Cancel Ride</button>
+                                <button type="button" class="btn btn--secondary" data-status="Available">Go Available</button>
+                            </div>
+                        </div>
+                        
+                        <div class="riders-panel">
+                            <h3>Subscriber Management</h3>
+                            <div class="riders-list" id="riders-list">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            <div class="rider-management">
+                                <input type="text" class="form-control" id="new-rider-name" placeholder="Enter rider name">
+                                <button type="button" class="btn btn--outline" id="add-rider-btn">Add Rider</button>
+                            </div>
+                        </div>
+                        
+                        <div class="notifications-panel">
+                            <h3>Live Notification Feed</h3>
+                            <div class="notifications-feed" id="notifications-feed">
+                                <p class="notification-placeholder">Driver status notifications will appear here...</p>
+                            </div>
+                            <div class="notification-history">
+                                <h4>Notification History</h4>
+                                <div class="history-stats" id="notification-stats">
+                                    <span>Total Notifications: <strong id="total-notifications">0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strategy Pattern Section -->
+        <section id="strategy-section" class="pattern-section">
+            <div class="card strategy-card">
+                <div class="card__header">
+                    <h2>💰 Dynamic Fare Calculator - Strategy Pattern</h2>
+                    <p>Real-time fare calculation with multiple pricing strategies</p>
+                </div>
+                <div class="card__body">
+                    <div class="pattern-content">
+                        <div class="fare-input">
+                            <h3>Trip Details</h3>
+                            <div class="input-group">
+                                <label class="form-label">Base Fare (₹ per km)</label>
+                                <input type="number" class="form-control" id="base-fare" value="15" min="10" max="50">
+                            </div>
+                            <div class="input-group">
+                                <label class="form-label">Distance (km)</label>
+                                <input type="number" class="form-control" id="distance" value="10" min="1" max="100">
+                            </div>
+                            <button type="button" class="btn btn--primary btn--full-width" id="calculate-all-btn">Calculate All Strategies</button>
+                        </div>
+                        
+                        <div class="fare-strategies">
+                            <h3>Pricing Strategy Cards</h3>
+                            <div class="strategies-grid">
+                                <div class="strategy-card-visual normal" data-strategy="Normal">
+                                    <div class="strategy-icon">💚</div>
+                                    <h4>Normal Fare</h4>
+                                    <span class="multiplier">1.0x</span>
+                                    <p>Standard pricing</p>
+                                    <div class="strategy-price" id="normal-price">₹0</div>
+                                </div>
+                                <div class="strategy-card-visual surge" data-strategy="Surge">
+                                    <div class="strategy-icon">🔥</div>
+                                    <h4>Surge Pricing</h4>
+                                    <span class="multiplier">2.5x</span>
+                                    <p>Peak hours pricing</p>
+                                    <div class="strategy-price" id="surge-price">₹0</div>
+                                </div>
+                                <div class="strategy-card-visual discount" data-strategy="Discount">
+                                    <div class="strategy-icon">🎯</div>
+                                    <h4>Discount Rate</h4>
+                                    <span class="multiplier">0.7x</span>
+                                    <p>Promotional pricing</p>
+                                    <div class="strategy-price" id="discount-price">₹0</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-table">
+                            <h3>Strategy Comparison</h3>
+                            <table class="comparison-table-content" id="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Strategy</th>
+                                        <th>Multiplier</th>
+                                        <th>Base Cost</th>
+                                        <th>Total Fare</th>
+                                        <th>Savings</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comparison-tbody">
+                                    <!-- Comparison data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Command Pattern Section -->
+        <section id="command-section" class="pattern-section">
+            <div class="card command-card">
+                <div class="card__header">
+                    <h2>⚡ Ride Operations - Command Pattern</h2>
+                    <p>Execute ride operations with full undo/redo functionality</p>
+                </div>
+                <div class="card__body">
+                    <div class="pattern-content">
+                        <div class="operations-panel">
+                            <h3>Operation Commands</h3>
+                            <div class="operation-buttons">
+                                <button type="button" class="btn btn--primary" data-command="book">📝 Book New Ride</button>
+                                <button type="button" class="btn btn--error" data-command="cancel">❌ Cancel Current Ride</button>
+                                <button type="button" class="btn btn--success" data-command="rate">⭐ Rate Driver</button>
+                                <button type="button" class="btn btn--outline" data-command="search">🔍 Search Available Rides</button>
+                            </div>
+                            
+                            <div class="undo-redo-controls">
+                                <button type="button" class="btn btn--outline" id="undo-btn" disabled>
+                                    <span>↶ Undo</span>
+                                </button>
+                                <button type="button" class="btn btn--outline" id="redo-btn" disabled>
+                                    <span>↷ Redo</span>
+                                </button>
+                                <div class="command-stats">
+                                    <span>Commands: <strong id="command-count">0</strong></span>
+                                    <span>Stack Size: <strong id="stack-size">0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="command-execution-log">
+                            <h3>Command Execution Log</h3>
+                            <div class="log-container" id="execution-log">
+                                <p class="log-placeholder">Command execution log will appear here...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="command-history">
+                            <h3>Command History & Stack</h3>
+                            <div class="history-stack" id="command-stack">
+                                <p class="history-placeholder">Command history will appear here...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ride-state">
+                            <h3>Current Ride State</h3>
+                            <div class="state-display" id="ride-state">
+                                <p>No active ride</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UML Diagram Section -->
+        <section class="pattern-section">
+            <div class="card">
+                <div class="card__header">
+                    <h2>📋 Enhanced UML Class Diagram</h2>
+                    <p>Complete behavioral patterns implementation with search functionality</p>
+                </div>
+                <div class="card__body">
+                    <div class="uml-container">
+                        <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/2fe74ce747990f5f91030060dca43c62/658fb0ec-2707-426c-8805-19b838aa161b/d258aff3.png" alt="Enhanced UML Class Diagram for Ride-Hailing App" class="uml-diagram">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
